@@ -21,7 +21,6 @@ const char *log_string[] = {
 static thread_local pid_t thread_id = 0;
 LogStream::LogStream(Logger *logger, const char *file, int line, LoggerLevel l, const char *func) : logger_{logger}
 {
-
     const char *file_name = strrchr(file, '/');
     if (file_name)
     {
@@ -48,5 +47,5 @@ LogStream::LogStream(Logger *logger, const char *file, int line, LoggerLevel l, 
 LogStream::~LogStream()
 {
     stream_ << "\n";
-    stream_.write(stream_.str());
+    logger_->Write(stream_.str());
 };

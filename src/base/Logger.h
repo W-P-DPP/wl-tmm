@@ -7,6 +7,7 @@
 #pragma once
 
 #include "NonCopyable.h"
+#include "FileLog.h"
 #include <string>
 
 namespace tmms
@@ -27,9 +28,10 @@ namespace tmms
         {
         private:
             LoggerLevel level_{kDebug};
+            FileLogPtr log_;
 
         public:
-            Logger() = default;
+            Logger(const FileLogPtr &log_);
             ~Logger() = default;
 
             void SetLoggerLevel(const LoggerLevel &level);

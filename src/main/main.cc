@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include <windows.h>
+//#include <windows.h>
 int main(int argc, const char **argv)
 {
     printf("HelloWorld!\n");
-    system("pause");
+  //  system("pause");
     return 0;
 }
