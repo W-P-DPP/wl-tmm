@@ -54,11 +54,11 @@ int main(int arg, char *argv[])
     TaskPtr task4 = std::make_shared<Task>([](const TaskPtr &prt)
                                            { sFileMgr->OnCheck(); },
                                            1000);
-    sTaskMsg->Add(task4);
+    sTaskMgr->Add(task4);
     testLog();
     while (1)
     {
-        sTaskMsg->OnWork();
+        sTaskMgr->OnWork();
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
     return 0;

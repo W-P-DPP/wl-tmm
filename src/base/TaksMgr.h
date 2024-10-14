@@ -31,5 +31,5 @@ namespace tmms
             // std::defer_lock_t lock_;
         };
     }
-#define sTaskMsg tmms::base::Singeton<tmms::base::TaksMgr>::Instance()
+#define sTaskMgr tmms::base::Singeton<tmms::base::TaksMgr>::Instance()
 }

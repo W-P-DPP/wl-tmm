@@ -20,10 +20,10 @@ void TestTask()
     TaskPtr task4 = std::make_shared<Task>([](const TaskPtr &prt)
                                            { std::cout << "task4:" << 30000 << std::endl;prt->Restart(); },
                                            30000);
-    sTaskMsg->Add(task1);
-    sTaskMsg->Add(task2);
-    sTaskMsg->Add(task3);
-    sTaskMsg->Add(task4);
+    sTaskMgr->Add(task1);
+    sTaskMgr->Add(task2);
+    sTaskMgr->Add(task3);
+    sTaskMgr->Add(task4);
 }
 
 // int main(int argc, char *argv[])
@@ -31,7 +31,7 @@ void TestTask()
 //     TestTask();
 //     while (1)
 //     {
-//         sTaskMsg->OnWork();
+//         sTaskMgr->OnWork();
 //         std::this_thread::sleep_for(std::chrono::milliseconds(50));
 //     }
 // }

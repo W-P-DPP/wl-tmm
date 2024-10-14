@@ -3,7 +3,7 @@
 #include "string.h"
 #include "TTime.h"
 #include "unistd.h"
-
+#include <iostream>
 #ifdef __WIN64
 #include <windows.h>
 #else
@@ -47,5 +47,13 @@ LogStream::LogStream(Logger *logger, const char *file, int line, LoggerLevel l, 
 LogStream::~LogStream()
 {
     stream_ << "\n";
-    logger_->Write(stream_.str());
+    if (logger_)
+    {
+        logger_->Write(stream_.str());
+    }
+    else
+    {
+        std::cout << stream_.str();
+    }
+    // logger_->Write(stream_.str());
 };

@@ -55,6 +55,10 @@
     "random": "cpp",
     "numbers": "cpp",
     "semaphore": "cpp",
-    "stop_token": "cpp"
+    "stop_token": "cpp",
+    "cstring": "cpp",
+    "map": "cpp",
+    "set": "cpp",
+    "iomanip": "cpp"
   }
 }

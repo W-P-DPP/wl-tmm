@@ -1,8 +1,6 @@
 aux_source_directory(. DIR_LIB_SRCS)
-add_library (lib_tmms_base ${DIR_LIB_SRCS})
-
-
-
-aux_source_directory(. SRCS)
-add_executable(tmms_base ${SRCS})
-install(TARGETS tmms_base RUNTIME DESTINATION sbin)
+add_library(base ${DIR_LIB_SRCS})
+add_dependencies(base jsoncpp)
+add_executable(base_test ${DIR_LIB_SRCS})
+target_link_libraries(base_test jsoncpp.a)
+install(TARGETS base_test RUNTIME DESTINATION sbin)
