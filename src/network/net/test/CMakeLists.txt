@@ -1,0 +1,2 @@
+add_executable(EventLoopThreadTest EventLoopThreadTest.cc)
+target_link_libraries(EventLoopThreadTest base network)

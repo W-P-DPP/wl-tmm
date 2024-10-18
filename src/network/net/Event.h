@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <sys/epoll.h>
 namespace tmms
 {
     namespace network
@@ -19,7 +20,7 @@ namespace tmms
             int event_{0};
 
         public:
-            Event();
+            Event(EventLoop *loop);
             Event(EventLoop *loop, int fd);
             ~Event();
 

@@ -1,5 +1,5 @@
 #include "EventLoop.h"
-#include "Network.h"
+#include "network/base/Network.h"
 #include <cstring>
 #include "fcntl.h"
 #include <sys/socket.h>
@@ -67,7 +67,7 @@ void EventLoop::Loop()
                 }
             }
 
-            if (ret = epoll_events_.size())
+            if (ret == epoll_events_.size())
             {
                 epoll_events_.resize(epoll_events_.size() * 2);
             }
@@ -140,6 +140,7 @@ bool EventLoop::EnableEventWriting(const EventPtr &event, bool enable)
     ev.events = event->event_;
     ev.data.fd = event->fd_;
     epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, event->fd_, &ev);
+    return true;
 };
 bool EventLoop::EnableEventReading(const EventPtr &event, bool enable)
 {
@@ -164,4 +165,5 @@ bool EventLoop::EnableEventReading(const EventPtr &event, bool enable)
     ev.events = event->event_;
     ev.data.fd = event->fd_;
     epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, event->fd_, &ev);
+    return true;
 };
