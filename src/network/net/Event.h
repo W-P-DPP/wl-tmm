@@ -14,7 +14,7 @@ namespace tmms
         {
             friend class EventLoop;
 
-        private:
+        protected:
             EventLoop *loop_{nullptr};
             int fd_{-1};
             int event_{0};

@@ -57,7 +57,7 @@ void EventLoop::Loop()
                 {
                     event->OnClose();
                 }
-                else if (ev.events & (EPOLLHUP | EPOLLPRI))
+                else if (ev.events & (EPOLLIN | EPOLLPRI))
                 {
                     event->OnRead();
                 }

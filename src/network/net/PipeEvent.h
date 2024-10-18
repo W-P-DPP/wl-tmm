@@ -1,5 +1,5 @@
 #pragma once
-
+#include <memory>
 #include "Event.h"
 
 namespace tmms
@@ -21,6 +21,7 @@ namespace tmms
 
             void Write(const char *data, size_t len);
         };
+        using PipeEventPrt = std::shared_ptr<PipeEvent>;
 
     }
 }
