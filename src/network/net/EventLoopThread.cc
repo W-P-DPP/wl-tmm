@@ -43,3 +43,8 @@ void EventLoopThread::StartEventLoop()
     loop.Loop();
     loop_ = nullptr;
 };
+
+std::thread &EventLoopThread::Thread()
+{
+    return thread_;
+}

@@ -26,6 +26,7 @@ namespace tmms
             ~EventLoopThread();
             void Run();
             EventLoop *Loop() const;
+            std::thread &Thread();
         };
 
     }
