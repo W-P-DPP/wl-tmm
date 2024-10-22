@@ -4,6 +4,7 @@
 #include "fcntl.h"
 #include <sys/socket.h>
 #include <unistd.h>
+#include "PipeEvent.h"
 
 using namespace tmms::network;
 
@@ -31,9 +32,9 @@ void EventLoop::Loop()
         // 获取多少个事件
         auto ret = ::epoll_wait(epoll_fd_, (struct epoll_event *)&epoll_events_[0], epoll_events_.size(), -1);
 
-        if (ret > 0)
+        if (ret >= 0)
         {
-            for (size_t i = 0; i < ret; i++)
+            for (int i = 0; i < ret; i++)
             {
                 struct epoll_event &ev = epoll_events_[i];
                 if (ev.data.fd <= 0)
@@ -71,10 +72,9 @@ void EventLoop::Loop()
             {
                 epoll_events_.resize(epoll_events_.size() * 2);
             }
+            RunFunctions();
         }
-        else if (ret == 0)
-        {
-        }
+
         else if (ret < 0)
         {
             NETWORK_ERROR << "epoll wait error:" << errno;
@@ -166,4 +166,68 @@ bool EventLoop::EnableEventReading(const EventPtr &event, bool enable)
     ev.data.fd = event->fd_;
     epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, event->fd_, &ev);
     return true;
+};
+
+void EventLoop::AssertInLoopThread()
+{
+    if (!IsInLoopThread())
+    {
+        NETWORK_ERROR << "当前时间循环事件不在同一个线程中";
+        exit(-1);
+    }
+};
+bool EventLoop::IsInLoopThread() const
+{
+    return t_local_eventloop == this;
+};
+void EventLoop::RunInLoop(const Func &f)
+{
+    if (IsInLoopThread())
+    {
+        f();
+    }
+    else
+    {
+        std::lock_guard<std::mutex> lk(lock_);
+        functions_.push(f);
+
+        WakeUp();
+    }
+};
+void EventLoop::RunInLoop(Func &&f)
+{
+    if (IsInLoopThread())
+    {
+        f();
+    }
+    else
+    {
+        std::lock_guard<std::mutex> lk(lock_);
+        functions_.push(std::move(f));
+
+        WakeUp();
+    }
+};
+
+// void EventLoop::QueueInLoop(const Func &f) {};
+void EventLoop::RunFunctions()
+{
+    std::lock_guard<std::mutex> lk(lock_);
+    while (!functions_.empty())
+    {
+        auto &f = functions_.front();
+        f();
+        functions_.pop();
+    }
+};
+
+void EventLoop::WakeUp()
+{
+    if (!pipe_event_)
+    {
+        pipe_event_ = std::make_shared<PipeEvent>(this);
+        AddEvevt(pipe_event_);
+    }
+    int64_t tmp = 1;
+    pipe_event_->Write((const char *)&tmp, sizeof(tmp));
 };

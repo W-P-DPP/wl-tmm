@@ -8,10 +8,8 @@ namespace
     void bind_cpu(std::thread &t, int n)
     {
         cpu_set_t cpu;
-
         CPU_ZERO(&cpu);
         CPU_SET(n, &cpu);
-
         pthread_setaffinity_np(t.native_handle(), sizeof(cpu), &cpu);
     }
 }

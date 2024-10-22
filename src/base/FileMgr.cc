@@ -105,7 +105,6 @@ void FileMgr::RotateDays(const FileLogPtr &file)
         std::string path = StringUtils::FilePath(file_path);
         std::string file_name = StringUtils::FileName(file_path);
         std::string file_exec = StringUtils::Extension(file_path);
-
         std::ostringstream oss;
         oss << path << file_name << file_exec;
         file->Rotate(oss.str());
