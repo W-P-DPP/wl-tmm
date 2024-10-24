@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include "PipeEvent.h"
+#include "base/TTime.h"
 
 using namespace tmms::network;
 
@@ -13,7 +14,7 @@ EventLoop::EventLoop() : epoll_fd_(::epoll_create(1024)), epoll_events_(1024)
 {
     if (t_local_eventloop)
     {
-        NETWORK_ERROR << "线程已存在事件！";
+        NETWORK_ERROR << "线程已存在！";
         exit(-1);
     }
     t_local_eventloop = this;
@@ -26,11 +27,12 @@ EventLoop::~EventLoop()
 void EventLoop::Loop()
 {
     looping_ = true;
+    int64_t timeout = 1000;
     while (looping_)
     {
         memset(&epoll_events_[0], 0x00, sizeof(struct epoll_event) * epoll_events_.size());
         // 获取多少个事件
-        auto ret = ::epoll_wait(epoll_fd_, (struct epoll_event *)&epoll_events_[0], epoll_events_.size(), -1);
+        auto ret = ::epoll_wait(epoll_fd_, (struct epoll_event *)&epoll_events_[0], epoll_events_.size(), timeout);
 
         if (ret >= 0)
         {
@@ -73,6 +75,8 @@ void EventLoop::Loop()
                 epoll_events_.resize(epoll_events_.size() * 2);
             }
             RunFunctions();
+            int64_t now = tmms::base::TTime::NowMs();
+            wheel_.OnTimer(now);
         }
 
         else if (ret < 0)
@@ -230,4 +234,65 @@ void EventLoop::WakeUp()
     }
     int64_t tmp = 1;
     pipe_event_->Write((const char *)&tmp, sizeof(tmp));
+};
+
+void EventLoop::InsertEntry(uint32_t delay, EntryPtr entryPtr)
+{
+    if (IsInLoopThread())
+    {
+        wheel_.InsertEntry(delay, entryPtr);
+    }
+    else
+    {
+        RunInLoop([this, delay, entryPtr]()
+                  { wheel_.InsertEntry(delay, entryPtr); });
+    }
+};
+void EventLoop::RunAfter(double delay, const Func &cb)
+{
+    if (IsInLoopThread())
+    {
+        wheel_.RunAfter(delay, cb);
+    }
+    else
+    {
+        RunInLoop([this, delay, cb]()
+                  { wheel_.RunAfter(delay, cb); });
+    }
+};
+void EventLoop::RunAfter(double delay, Func &&cb)
+{
+    if (IsInLoopThread())
+    {
+        wheel_.RunAfter(delay, cb);
+    }
+    else
+    {
+        RunInLoop([this, delay, cb]()
+                  { wheel_.RunAfter(delay, cb); });
+    }
+};
+void EventLoop::RunEvery(double interval, const Func &cb)
+{
+    if (IsInLoopThread())
+    {
+        wheel_.RunEvery(interval, cb);
+    }
+    else
+    {
+        RunInLoop([this, interval, cb]()
+                  { wheel_.RunEvery(interval, cb); });
+    }
+};
+void EventLoop::RunEvery(double interval, Func &&cb)
+{
+    if (IsInLoopThread())
+    {
+        wheel_.RunEvery(interval, cb);
+    }
+    else
+    {
+        RunInLoop([this, interval, cb]()
+                  { wheel_.RunEvery(interval, cb); });
+    }
 };

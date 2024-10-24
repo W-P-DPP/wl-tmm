@@ -60,6 +60,15 @@
     "map": "cpp",
     "set": "cpp",
     "iomanip": "cpp",
-    "future": "cpp"
+    "future": "cpp",
+    "list": "cpp",
+    "forward_list": "cpp",
+    "internet": "cpp",
+    "buffer": "cpp",
+    "executor": "cpp",
+    "io_context": "cpp",
+    "netfwd": "cpp",
+    "socket": "cpp",
+    "timer": "cpp"
   }
 }

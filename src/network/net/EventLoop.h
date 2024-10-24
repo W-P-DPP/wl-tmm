@@ -8,6 +8,7 @@
 #include <queue>
 #include <mutex>
 #include "PipeEvent.h"
+#include "TimingWheel.h"
 
 namespace tmms
 {
@@ -27,9 +28,13 @@ namespace tmms
             std::mutex lock_;
 
             PipeEventPrt pipe_event_;
+
+            TimingWheel wheel_;
             // void QueueInLoop(const Func &f);
             // void QueueInLoop(Func &&f);
+        private:
             void RunFunctions();
+            void WakeUp();
 
         public:
             EventLoop();
@@ -37,7 +42,6 @@ namespace tmms
 
             void Loop();
             void Quit();
-            void WakeUp();
             void AddEvevt(const EventPtr &event);
             void DelEvevt(const EventPtr &event);
             bool EnableEventWriting(const EventPtr &event, bool enable);
@@ -47,6 +51,12 @@ namespace tmms
             bool IsInLoopThread() const;
             void RunInLoop(const Func &f);
             void RunInLoop(Func &&f);
+
+            void InsertEntry(uint32_t delay, EntryPtr entryPtr);
+            void RunAfter(double delay, const Func &cb);
+            void RunAfter(double delay, Func &&cb);
+            void RunEvery(double interval, const Func &cb);
+            void RunEvery(double interval, Func &&cb);
         };
 
     }

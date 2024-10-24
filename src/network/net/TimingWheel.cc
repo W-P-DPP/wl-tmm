@@ -1,4 +1,4 @@
-#include <TimingWheel.h>
+#include "TimingWheel.h"
 #include "network/base/Network.h"
 using namespace tmms::network;
 
@@ -27,16 +27,16 @@ void TimingWheel::InsertHourEntry(uint32_t delay, EntryPtr entryPtr)
 {
     auto hour = delay / kTimingHour;
     auto second = delay % kTimingHour;
-    CallBackEntryPtr newEntry = std::make_shared<CallBackEntry>([this, hour, entryPtr]()
-                                                                { InsertEntry(hour, entryPtr); });
+    CallBackEntryPtr newEntry = std::make_shared<CallBackEntry>([this, second, entryPtr]()
+                                                                { InsertEntry(second, entryPtr); });
     Wheels_[kTimingTypeHour][hour - 1].emplace(newEntry);
 };
 void TimingWheel::InsertDayEntry(uint32_t delay, EntryPtr entryPtr)
 {
     auto day = delay / kTimingDay;
     auto second = delay % kTimingDay;
-    CallBackEntryPtr newEntry = std::make_shared<CallBackEntry>([this, day, entryPtr]()
-                                                                { InsertEntry(day, entryPtr); });
+    CallBackEntryPtr newEntry = std::make_shared<CallBackEntry>([this, second, entryPtr]()
+                                                                { InsertEntry(second, entryPtr); });
     Wheels_[kTimingTypeDay][day - 1].emplace(newEntry);
 };
 
@@ -98,7 +98,8 @@ void TimingWheel::OnTimer(int64_t now)
 };
 void TimingWheel::PopUp(Wheel &bq)
 {
-    bq.front().clear();
+    WheelEntry tmp;
+    bq.front().swap(tmp);
     bq.pop_front();
     bq.push_back(WheelEntry());
 };

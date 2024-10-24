@@ -11,10 +11,10 @@ namespace tmms
     namespace network
     {
         using Func = std::function<void()>;
-        using Wheels = std::vector<Wheel>;
-        using Wheel = std::deque<WheelEntry>;
-        using WheelEntry = std::unordered_set<EntryPtr>;
         using EntryPtr = std::shared_ptr<void>;
+        using WheelEntry = std::unordered_set<EntryPtr>;
+        using Wheel = std::deque<WheelEntry>;
+        using Wheels = std::vector<Wheel>;
 
         const int kTimingMinute = 60;
         const int kTimingHour = 60 * 60;
