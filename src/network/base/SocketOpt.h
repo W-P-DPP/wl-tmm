@@ -20,6 +20,7 @@ namespace tmms
 
         public:
             SocketOpt(int sock, bool v6);
+            SocketOpt(int sock) : sock_(sock) {};
             ~SocketOpt() = default;
 
             static int CreateNonblockingTcpSocket(int family);
