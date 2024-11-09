@@ -25,7 +25,7 @@ void Connection::SetContext(int type, const std::shared_ptr<void> &context)
 {
     contexts_[type] = context;
 };
-void Connection::SetContext(int type, const std::shared_ptr<void> &context)
+void Connection::SetContext(int type, std::shared_ptr<void> &&context)
 {
     contexts_[type] = std::move(context);
 };

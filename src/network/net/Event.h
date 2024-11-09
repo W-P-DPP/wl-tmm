@@ -31,6 +31,7 @@ namespace tmms
             bool EnableWriting(bool enable);
             bool EnableReading(bool enable);
             int Fd() const;
+            void Close();
         };
 
     }

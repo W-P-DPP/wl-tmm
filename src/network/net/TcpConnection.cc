@@ -1,6 +1,7 @@
 #include "TcpConnection.h"
 #include "network/base/Network.h"
 #include <unistd.h>
+#include <iostream>
 using namespace tmms::network;
 
 TcpConnection::TcpConnection(EventLoop *loop, int socketfd, const InetAddress &localAddr, const InetAddress &peerAddr)
@@ -18,6 +19,7 @@ void TcpConnection::OnClose()
             close_cb_(std::dynamic_pointer_cast<TcpConnection>(shared_from_this()));
         }
         closed_ = true;
+        Event::Close();
     }
 };
 void TcpConnection::ForceClose()
@@ -105,7 +107,7 @@ void TcpConnection::OnWrite()
                 {
                     if (io_vec_li_.front().iov_len > ret)
                     {
-                        io_vec_li_.front().iov_base += ret;
+                        io_vec_li_.front().iov_base = (char *)io_vec_li_.front().iov_base + ret;
                         io_vec_li_.front().iov_len -= ret;
                         break;
                     }
@@ -207,12 +209,56 @@ void TcpConnection::SendInLoop(const char *buf, size_t size)
         }
         size -= send_len;
     }
+    if (size == 0)
+    {
+        if (write_complete_cb_)
+        {
+            write_complete_cb_(std::dynamic_pointer_cast<TcpConnection>(shared_from_this()));
+        }
+        return;
+    }
     if (size > 0)
     {
         struct iovec vec;
-        vec.iov_base = (void *)buf + send_len;
+        vec.iov_base = (void *)(buf + send_len);
         vec.iov_len = size;
         io_vec_li_.push_back(vec);
         EnableWriting(true);
+    }
+};
+
+void TcpConnection::SetTimeoutCallback(int timeout, const TimeoutCallback &cb)
+{
+    auto cp = std::dynamic_pointer_cast<TcpConnection>(shared_from_this());
+    loop_->RunAfter(timeout, [&cp, &cb]()
+                    { cb(cp); });
+};
+void TcpConnection::SetTimeoutCallback(int timeout, TimeoutCallback &&cb)
+{
+    auto cp = std::dynamic_pointer_cast<TcpConnection>(shared_from_this());
+    loop_->RunAfter(timeout, [&cp, &cb]()
+                    { cb(cp); });
+};
+void TcpConnection::OnTimeout()
+{
+    NETWORK_ERROR << "超时关闭，host:" << peer_addr_.ToIpPort();
+    std::cout << "超时关闭，host:" << peer_addr_.ToIpPort()
+              << std::endl;
+    OnClose();
+};
+
+void TcpConnection::EnableCheckIdleTimeout(int32_t max_time)
+{
+    auto tp = std::make_shared<TimeoutEntry>(std::dynamic_pointer_cast<TcpConnection>(shared_from_this()));
+    max_idle_time_ = max_time;
+    timeout_entry_ = tp;
+    loop_->InsertEntry(max_time, tp);
+};
+void TcpConnection::ExtendLife()
+{
+    auto tp = timeout_entry_.lock();
+    if (tp)
+    {
+        loop_->InsertEntry(max_idle_time_, tp);
     }
 };

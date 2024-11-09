@@ -15,6 +15,7 @@ namespace tmms
         using CloseConnectionCallback = std::function<void(const TcpConnectionPtr &)>;
         using WriteCompleteCallback = std::function<void(const TcpConnectionPtr &)>;
         using MessageCallback = std::function<void(const TcpConnectionPtr &, MsgBuffer &buffer)>;
+        using TimeoutCallback = std::function<void(const TcpConnectionPtr &)>;
 
         struct BufferNode
         {
@@ -24,6 +25,9 @@ namespace tmms
             size_t size{0};
         };
         using BufferNodePtr = std::shared_ptr<BufferNode>;
+
+        struct TimeoutEntry;
+
         class TcpConnection : public Connection
 
         {
@@ -37,8 +41,12 @@ namespace tmms
             std::vector<struct iovec> io_vec_li_;
             WriteCompleteCallback write_complete_cb_;
 
+            std::weak_ptr<TimeoutEntry> timeout_entry_;
+            int32_t max_idle_time_{30};
+
             void SendInLoop(std::list<BufferNodePtr> &list);
             void SendInLoop(const char *buf, size_t size);
+            void ExtendLife();
 
         public:
             TcpConnection(EventLoop *loop, int socketfd, const InetAddress &localAddr, const InetAddress &peerAddr);
@@ -59,7 +67,25 @@ namespace tmms
 
             void Send(std::list<BufferNodePtr> &list);
             void Send(const char *buf, size_t size);
-        };
 
+            void OnTimeout();
+            void SetTimeoutCallback(int timeout, const TimeoutCallback &cb);
+            void SetTimeoutCallback(int timeout, TimeoutCallback &&cb);
+            void EnableCheckIdleTimeout(int32_t max_time);
+        };
+        struct TimeoutEntry
+        {
+        public:
+            TimeoutEntry(const TcpConnectionPtr &c) : conn(c) {};
+            ~TimeoutEntry()
+            {
+                auto c = conn.lock();
+                if (c)
+                {
+                    c->OnTimeout();
+                }
+            };
+            std::weak_ptr<TcpConnection> conn;
+        };
     }
 }

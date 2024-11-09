@@ -54,7 +54,7 @@ namespace tmms
                 {
                     return std::dynamic_pointer_cast<T>(iter->second);
                 }
-                return std::shared_ptr<T>;
+                return std::shared_ptr<T>(nullptr);
             };
             void ClearContext(int type);
             void ClearContext();
