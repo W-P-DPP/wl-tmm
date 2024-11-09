@@ -28,9 +28,12 @@ namespace tmms
         private:
             std::unordered_map<int, ConntextPtr> contexts_;
             ActiveCallback active_cb_;
+
+            std::atomic<bool> active_{false};
+
+        protected:
             InetAddress local_addr_;
             InetAddress peer_addr_;
-            std::atomic<bool> active_{false};
 
         public:
             Connection(EventLoop *loop, int fd, const InetAddress &localAddr, const InetAddress &peerAddr);
