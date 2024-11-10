@@ -42,7 +42,7 @@ void TcpServer::OnAccept(int fd, const InetAddress &addr)
     }
     con->SetRecMsgCallback(message_cb_);
     connections_.insert(con);
-    loop_->AddEvevt(con);
+    loop_->AddEvent(con);
     con->EnableCheckIdleTimeout(30);
     if (new_connection_cb_)
     {
@@ -55,7 +55,7 @@ void TcpServer::OnConnectionClose(const TcpConnectionPtr &con)
     NETWORK_TRACE << "host:" << con->PeerAddr().ToIpPort() << " closed";
     loop_->AssertInLoopThread();
     connections_.erase(con);
-    loop_->DelEvevt(con);
+    loop_->DelEvent(con);
     if (destory_connection_cb)
     {
         destory_connection_cb(con);

@@ -18,7 +18,15 @@ namespace tmms
             kUserContext,
             kFlvContext
         };
-
+        struct BufferNode
+        {
+            BufferNode(void *buf, size_t s) : addr(buf), size(s)
+            {
+            }
+            void *addr{nullptr};
+            size_t size;
+        };
+        using BufferNodePtr = std::shared_ptr<BufferNode>;
         using ConntextPtr = std::shared_ptr<void>;
         class Connection;
         using ConnectionPtr = std::shared_ptr<Connection>;

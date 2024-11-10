@@ -18,7 +18,7 @@ void TestEventLoopThread()
     {
         std::cout << "loop:" << loop << std::endl;
         PipeEventPrt pipe = std::make_shared<PipeEvent>(loop);
-        loop->AddEvevt(pipe);
+        loop->AddEvent(pipe);
         int64_t test = 123456;
         pipe->Write((const char *)&test, sizeof(test));
         th = std::thread([&pipe]()

@@ -34,12 +34,12 @@ int main(int argc, const char **argv)
                                             connection->SetWriteCompleteCallback([&loop](const TcpConnectionPtr &conn)
                                                                              {
                                             std::cout<<"write success host:"<<conn->PeerAddr().ToIpPort()<<std::endl;
-                                            loop->DelEvevt(conn);
+                                            loop->DelEvent(conn);
                                                 conn->ForceClose();
          });
          connection->EnableCheckIdleTimeout(3);
          list.push_back(connection);
-        loop->AddEvevt(connection); });
+        loop->AddEvent(connection); });
         acceptor->Start();
         while (1)
         {

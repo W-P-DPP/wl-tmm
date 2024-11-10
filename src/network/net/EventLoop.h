@@ -42,8 +42,8 @@ namespace tmms
 
             void Loop();
             void Quit();
-            void AddEvevt(const EventPtr &event);
-            void DelEvevt(const EventPtr &event);
+            void AddEvent(const EventPtr &event);
+            void DelEvent(const EventPtr &event);
             bool EnableEventWriting(const EventPtr &event, bool enable);
             bool EnableEventReading(const EventPtr &event, bool enable);
 

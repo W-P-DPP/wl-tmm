@@ -48,7 +48,7 @@ void Acceptor::Open()
         delete socket_opt_;
         socket_opt_ = nullptr;
     }
-    loop_->AddEvevt(std::dynamic_pointer_cast<Acceptor>(shared_from_this()));
+    loop_->AddEvent(std::dynamic_pointer_cast<Acceptor>(shared_from_this()));
     socket_opt_ = new SocketOpt(fd_);
     socket_opt_->SetReuseAddr(true);
     socket_opt_->SetReusePort(true);
@@ -62,7 +62,7 @@ void Acceptor::Start()
 };
 void Acceptor::Stop()
 {
-    loop_->DelEvevt(std::dynamic_pointer_cast<Acceptor>(shared_from_this()));
+    loop_->DelEvent(std::dynamic_pointer_cast<Acceptor>(shared_from_this()));
 };
 void Acceptor::OnRead()
 {

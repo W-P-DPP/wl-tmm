@@ -25,7 +25,7 @@ void TcpClient::ConnectInLoop()
         return;
     }
     status_ = kTcpConStatusConnecting;
-    loop_->AddEvevt(std::dynamic_pointer_cast<TcpClient>(shared_from_this()));
+    loop_->AddEvent(std::dynamic_pointer_cast<TcpClient>(shared_from_this()));
     EnableWriting(true);
     SocketOpt opt(fd_);
     auto ret = opt.Connect(server_addr_);
@@ -108,7 +108,7 @@ void TcpClient::OnClose()
 {
     if (status_ == kTcpConStatusConnecting || status_ == kTcpConStatusConnected)
     {
-        loop_->DelEvevt(std::dynamic_pointer_cast<TcpClient>(shared_from_this()));
+        loop_->DelEvent(std::dynamic_pointer_cast<TcpClient>(shared_from_this()));
     }
     status_ = kTcpConStatusDisConnected;
     TcpConnection::OnClose();

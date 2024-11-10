@@ -90,7 +90,7 @@ void EventLoop::Quit()
     looping_ = false;
 };
 
-void EventLoop::AddEvevt(const EventPtr &event)
+void EventLoop::AddEvent(const EventPtr &event)
 {
     auto iter = events_.find(event->Fd());
     if (iter != events_.end())
@@ -106,7 +106,7 @@ void EventLoop::AddEvevt(const EventPtr &event)
     ev.data.fd = event->fd_;
     epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, event->fd_, &ev);
 };
-void EventLoop::DelEvevt(const EventPtr &event)
+void EventLoop::DelEvent(const EventPtr &event)
 {
     auto iter = events_.find(event->Fd());
     if (iter == events_.end())
@@ -230,7 +230,7 @@ void EventLoop::WakeUp()
     if (!pipe_event_)
     {
         pipe_event_ = std::make_shared<PipeEvent>(this);
-        AddEvevt(pipe_event_);
+        AddEvent(pipe_event_);
     }
     int64_t tmp = 1;
     pipe_event_->Write((const char *)&tmp, sizeof(tmp));
