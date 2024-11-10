@@ -50,7 +50,7 @@ namespace tmms
 
         public:
             TcpConnection(EventLoop *loop, int socketfd, const InetAddress &localAddr, const InetAddress &peerAddr);
-            ~TcpConnection();
+            virtual ~TcpConnection();
 
             void SetCloseCallback(const CloseConnectionCallback &cb);
             void SetCloseCallback(CloseConnectionCallback &&cb);

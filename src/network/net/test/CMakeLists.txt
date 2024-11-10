@@ -14,3 +14,6 @@ target_link_libraries(AcceptorTest base network)
 
 add_executable(TcpConnectionTest TcpConnectionTest.cc)
 target_link_libraries(TcpConnectionTest base network)
+
+add_executable(TcpClientTest TcpClientTest.cc)
+target_link_libraries(TcpClientTest base network)
