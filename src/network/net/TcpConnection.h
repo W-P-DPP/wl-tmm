@@ -29,7 +29,6 @@ namespace tmms
         struct TimeoutEntry;
 
         class TcpConnection : public Connection
-
         {
         private:
             bool closed_{false};

@@ -1,10 +1,10 @@
 #pragma once
-#include "TcpConnection.h"
+#include "network/net/TcpConnection.h"
 #include "network/base/InetAddress.h"
 #include <functional>
 #include "network/net/EventLoop.h"
 #include <list>
-#include "MsgBuffer.h"
+#include "network/base/MsgBuffer.h"
 
 namespace tmms
 {
