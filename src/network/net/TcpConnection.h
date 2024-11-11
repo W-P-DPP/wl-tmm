@@ -17,13 +17,13 @@ namespace tmms
         using MessageCallback = std::function<void(const TcpConnectionPtr &, MsgBuffer &buffer)>;
         using TimeoutCallback = std::function<void(const TcpConnectionPtr &)>;
 
-        struct BufferNode
-        {
-            BufferNode(void *buf, size_t s)
-                : addr(buf), size(s) {}
-            void *addr{nullptr};
-            size_t size{0};
-        };
+        // struct BufferNode
+        // {
+        //     BufferNode(void *buf, size_t s)
+        //         : addr(buf), size(s) {}
+        //     void *addr{nullptr};
+        //     size_t size{0};
+        // };
         using BufferNodePtr = std::shared_ptr<BufferNode>;
 
         struct TimeoutEntry;

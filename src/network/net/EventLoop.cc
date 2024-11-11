@@ -176,7 +176,7 @@ void EventLoop::AssertInLoopThread()
 {
     if (!IsInLoopThread())
     {
-        NETWORK_ERROR << "当前时间循环事件不在同一个线程中";
+        NETWORK_ERROR << "当前事件循环事件不在同一个线程中";
         exit(-1);
     }
 };
